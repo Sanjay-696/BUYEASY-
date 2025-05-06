@@ -1,0 +1,443 @@
+package com.example.orderease.controller;
+import java.util.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.orderease.dto.ProductDto;
+import com.example.orderease.dto.ResponseDto;
+import com.example.orderease.service.ProductService;
+
+
+@CrossOrigin(origins ="*")
+@RestController
+@RequestMapping("product")
+public class ProductController {
+	
+	@Autowired
+	private ProductService productService;
+	
+	
+	@PostMapping("/addproduct")
+	
+	public ResponseEntity<ResponseDto> addProductProcess(@RequestBody ProductDto dto){
+		return ResponseEntity.ok(productService.addProductProcess(dto));
+		//return null;
+		
+	}
+	
+	@GetMapping("/getproductbyname") // New endpoint
+    public ResponseEntity<List<ProductDto>> getProductByName(@RequestParam("productName") String productName){
+        return ResponseEntity.ok(productService.getProductByName(productName));
+    }
+	
+	 @GetMapping("/productgetall")
+	  public ResponseEntity<List<ProductDto>> getAllProducts() {
+	        return ResponseEntity.ok(productService.getAllProducts());
+	  }
+	
+	@GetMapping("/getproduct")
+	
+	public ResponseEntity<List<ProductDto>> getProductProcess(@RequestParam("productId") String productId){
+		return ResponseEntity.ok(productService.getProductProcess(productId));
+		
+	}
+	
+	
+	@DeleteMapping("/deleteproduct")
+	public ResponseEntity<ResponseDto> deleteBikeById(@RequestParam("productId") String productId) {
+	    return ResponseEntity.ok(productService.deleteBikeById(productId));
+	}
+	
+	@DeleteMapping("/deleteall")
+	public ResponseEntity<ResponseDto> deleteAllProduct(){
+		return ResponseEntity.ok(productService.deleteAllProduct());
+		
+	}
+	
+
+}
+
+
+Product Controller
+
+
+[9:56 AM, 5/6/2025] +91 883 854 3380: package com.example.orderease.controller;
+import java.util.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.orderease.dto.ProductDto;
+import com.example.orderease.dto.ResponseDto;
+import com.example.orderease.service.ProductService;
+
+
+@CrossOrigin(origins ="*")
+@RestController
+@RequestMapping("product")
+public class ProductController {
+	
+	@Autowired
+	private ProductService productService;
+	
+	
+	@PostMapping("/addproduct")
+	
+	public ResponseEntity<ResponseDto> addProductProcess(@RequestBody ProductDto dto){
+		return ResponseEntity.ok(productService.addProductProcess(dto));
+		//return null;
+		
+	}
+	
+	@GetMapping("/getproductbyname") // New endpoint
+    public ResponseEntity<List<ProductDto>> getProductByName(@RequestParam("productName") String productName){
+        return ResponseEntity.ok(productService.getProductByName(productName));
+    }
+	
+	 @GetMapping("/productgetall")
+	  public ResponseEntity<List<ProductDto>> getAllProducts() {
+	        return ResponseEntity.ok(productService.getAllProducts());
+	  }
+	
+	@GetMapping("/getproduct")
+	
+	public ResponseEntity<List<ProductDto>> getProductProcess(@RequestParam("productId") String productId){
+		return ResponseEntity.ok(productService.getProductProcess(productId));
+		
+	}
+	
+	
+	@DeleteMapping("/deleteproduct")
+	public ResponseEntity<ResponseDto> deleteBikeById(@RequestParam("productId") String productId) {
+	    return ResponseEntity.ok(productService.deleteBikeById(productId));
+	}
+	
+	@DeleteMapping("/deleteall")
+	public ResponseEntity<ResponseDto> deleteAllProduct(){
+		return ResponseEntity.ok(productService.deleteAllProduct());
+		
+	}
+	
+
+}
+
+
+Product Controller
+[9:56 AM, 5/6/2025] +91 883 854 3380: package com.example.orderease.serviceImple;
+import java.util.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.orderease.dao.ProductRepository;
+import com.example.orderease.dto.ProductDto;
+import com.example.orderease.dto.ResponseDto;
+import com.example.orderease.entity.ProductEntity;
+import com.example.orderease.service.ProductService;
+
+@Service
+public class ProductServiceImplem implements ProductService {
+	
+	@Autowired
+	private  ProductRepository productRepository;
+	
+	
+	
+	@Override
+	public ResponseDto addProductProcess(ProductDto dto) {
+		
+		ResponseDto response = new ResponseDto();
+		ProductEntity productEntity = new ProductEntity();
+		System.out.println(dto.getProductName());
+		
+		
+		try {
+			
+			if(dto.getProductId()!=null) {
+				
+					Optional<ProductEntity> addOpt = productRepository.findById(dto.getProductId());
+				
+					if(!addOpt.isEmpty()) {
+						productEntity = addOpt.get();
+						
+						productEntity.setProductName(dto.getProductName());
+						productEntity.setProductUnit(dto.getProductUnit());
+						productEntity.setProductMrp(dto.getProductMrp());
+						productEntity.setProductPrice(dto.getProductPrice());
+						//productEntity.setProductValue(dto.getProductValue());
+						productEntity.setTax(dto.getTax());
+						
+					}
+					productRepository.save(productEntity);
+					response.setResponseMessage("Product Updated Successfully");
+					response.setResponseStatusCode(200);
+			}
+			
+			
+			else {
+			productEntity.setProductName(dto.getProductName());
+			productEntity.setProductUnit(dto.getProductUnit());
+			productEntity.setProductMrp(dto.getProductMrp());
+			productEntity.setProductPrice(dto.getProductPrice());
+			//productEntity.setProductValue(dto.getProductValue());
+			productEntity.setTax(dto.getTax());
+			
+			productRepository.save(productEntity);
+			response.setResponseMessage("Product has been added successfully");
+			response.setResponseStatusCode(200);
+			}
+			
+		}
+		
+		catch(Exception e) {
+			
+			response.setResponseMessage("Product was not added ");
+			response.setResponseStatusCode(400);
+			throw e;
+			//return response;
+			
+		}
+		
+		return response;
+		
+		
+		
+	}
+	
+	@Override
+	public List<ProductDto> getProductProcess(String productId) {
+		
+		ProductEntity prod = new ProductEntity();
+		
+		Optional<ProductEntity> prodOpt = productRepository.findById(productId);
+		List<ProductDto> dtos = new ArrayList<>();
+		
+		ProductDto dto = new ProductDto();
+		
+		try {
+
+		if(!prodOpt.isEmpty()) {
+			prod = prodOpt.get();
+			dto.setProductName(prod.getProductName());
+			dto.setProductPrice(prod.getProductPrice());
+			dto.setProductUnit(prod.getProductUnit());
+			//dto.setProductValue(prod.getProductValue());
+			dto.setProductMrp(prod.getProductMrp());
+			dto.setProductId(prod.getProductId());
+		}
+		dtos.add(dto);
+		}
+		
+		catch(Exception e) {
+			throw e;
+		}
+		
+		
+		
+		return dtos;
+		
+	}
+	
+	@Override
+    public List<ProductDto> getProductByName(String productName) {
+        List<ProductEntity> productEntities = productRepository.findByProductNameIgnoreCase(productName);
+        List<ProductDto> productDtos = new ArrayList<>();
+        for (ProductEntity entity : productEntities) {
+            ProductDto dto = new ProductDto();
+            dto.setProductId(entity.getProductId());
+            dto.setProductName(entity.getProductName());
+            dto.setProductUnit(entity.getProductUnit());
+            dto.setProductMrp(entity.getProductMrp());
+            dto.setProductPrice(entity.getProductPrice());
+           // dto.setProductValue(entity.getProductValue());
+            dto.setTax(entity.getTax());
+            productDtos.add(dto);
+        }
+        return productDtos;
+    }
+	
+	
+	@Override
+	public ResponseDto deleteBikeById(String productId) {
+	    ResponseDto response = new ResponseDto();
+
+	    Optional<ProductEntity> bikeOpt = productRepository.findById(productId);
+
+	    if (bikeOpt.isPresent()) {
+	        productRepository.deleteById(productId);
+	        response.setResponseMessage("Bike deleted successfully");
+	        response.setResponseStatusCode(200);
+	    } else {
+	        response.setResponseMessage("Bike not found");
+	        response.setResponseStatusCode(404);
+	    }
+
+	    return response;
+	}
+	
+	 @Override
+	    public List<ProductDto> getAllProducts() {
+	        List<ProductEntity> productEntities = productRepository.findAll();
+	        List<ProductDto> productDtos = new ArrayList<>();
+	        for (ProductEntity entity : productEntities) {
+	            ProductDto dto = new ProductDto();
+	            dto.setProductId(entity.getProductId());
+	            dto.setProductName(entity.getProductName());
+	            dto.setProductUnit(entity.getProductUnit());
+	            dto.setProductMrp(entity.getProductMrp());
+	            dto.setProductPrice(entity.getProductPrice());
+	            dto.setTax(entity.getTax());
+	            productDtos.add(dto);
+	        }
+	        return productDtos;
+	    }
+	
+	
+	@Override
+	public ResponseDto deleteAllProduct() {
+		
+		ResponseDto response = new ResponseDto();
+		
+		List<ProductEntity> prodOpt = productRepository.findAll();
+		
+		if(prodOpt.contains(prodOpt)) {
+			productRepository.deleteAll(prodOpt);
+			response.setResponseMessage("All had been deleted successfully");
+			response.setResponseStatusCode(200);
+		}
+		
+		else {
+			
+			response.setResponseMessage("ProductEntity was Empty");
+			response.setResponseStatusCode(400);
+		}
+		return response;
+		
+	}
+
+}
+
+
+product service
+
+
+package com.example.orderease.dto;
+import java.util.*;
+import java.time.LocalDate;
+
+public class OrderDto { 
+	
+	private String orderId;
+	private String customerId;
+	
+	private List<OrderProductDto> productOrder;
+
+	private LocalDate orderDate;
+	
+	private int totalAmount;
+	
+	private boolean orderStatus;
+	
+	
+	private String customerName;
+	private String mobileNumber;
+	private String address;
+
+	
+	public String getCustomerName() {
+		return customerName;
+	}
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	// Existing Getters and Setters
+	public boolean isOrderStatus() {
+		return orderStatus;
+	}
+	public void setOrderStatus(boolean orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+
+	public int getTotalAmount() {
+		return totalAmount;
+	}
+	public void setTotalAmount(int totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public String getCustomerId() {
+		return customerId;
+	}
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
+	}
+
+	public LocalDate getOrderDate() {
+		return orderDate;
+	}
+	public void setOrderDate(LocalDate orderDate) {
+		this.orderDate = orderDate;
+	}
+	
+	public String getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+	
+	public List<OrderProductDto> getProductOrder() {
+		return productOrder;
+	}
+	public void setProductOrder(List<OrderProductDto> productOrder) {
+		this.productOrder = productOrder;
+	}
+
+	public OrderDto() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	public String toString() {
+		return "OrderDto [orderId=" + orderId + ", customerId=" + customerId + ", productOrder=" + productOrder
+				+ ", orderDate=" + orderDate + ", totalAmount=" + totalAmount + ", orderStatus=" + orderStatus
+				+ ", customerName=" + customerName + ", mobileNumber=" + mobileNumber + ", address=" + address + "]";
+	}
+}
+
+
+
+order dto
